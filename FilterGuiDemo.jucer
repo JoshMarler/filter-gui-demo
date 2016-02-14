@@ -12,6 +12,30 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.1.0">
   <MAINGROUP id="HYXcZx" name="FilterGuiDemo">
     <GROUP id="{14FD42A3-E862-7D72-C749-E37EE6259BAA}" name="Source">
+      <GROUP id="{BD90CF5D-05E7-E511-02E1-CB9991F0ED2E}" name="Parameters">
+        <FILE id="ueAYcf" name="CustomAudioParameter.cpp" compile="1" resource="0"
+              file="Source/Parameters/CustomAudioParameter.cpp"/>
+        <FILE id="Y7q1Bc" name="CustomAudioParameter.h" compile="0" resource="0"
+              file="Source/Parameters/CustomAudioParameter.h"/>
+      </GROUP>
+      <GROUP id="{8E21AFCA-7E9D-A4D2-6A48-4538ACB96036}" name="GUIComponents">
+        <FILE id="pHeTMu" name="CustomLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/GUIComponents/CustomLookAndFeel.cpp"/>
+        <FILE id="s99XAr" name="CustomLookAndFeel.h" compile="0" resource="0"
+              file="Source/GUIComponents/CustomLookAndFeel.h"/>
+        <FILE id="ORLQH2" name="FilterResponseDisplay.cpp" compile="1" resource="0"
+              file="Source/GUIComponents/FilterResponseDisplay.cpp"/>
+        <FILE id="AWHIkt" name="FilterResponseDisplay.h" compile="0" resource="0"
+              file="Source/GUIComponents/FilterResponseDisplay.h"/>
+      </GROUP>
+      <GROUP id="{BFBD566A-22D8-445A-FCD9-73739DF23E9B}" name="AudioDSPComponents">
+        <FILE id="MDo4vR" name="AudioFilter.cpp" compile="1" resource="0" file="Source/AudioDSPComponents/AudioFilter.cpp"/>
+        <FILE id="TGBg9P" name="AudioFilter.h" compile="0" resource="0" file="Source/AudioDSPComponents/AudioFilter.h"/>
+        <FILE id="XzsAbd" name="VAOnePoleFilter.cpp" compile="1" resource="0"
+              file="Source/AudioDSPComponents/VAOnePoleFilter.cpp"/>
+        <FILE id="hESrKo" name="VAOnePoleFilter.h" compile="0" resource="0"
+              file="Source/AudioDSPComponents/VAOnePoleFilter.h"/>
+      </GROUP>
       <FILE id="hDNhES" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="O8awBW" name="PluginProcessor.h" compile="0" resource="0"

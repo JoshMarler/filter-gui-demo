@@ -66,7 +66,7 @@ public:
     };
     
 protected:
-    //This pointer should be initialised in the derived filter class by calling filterResponse.reset(new DerivedFilterClass());
+    //This pointer should be initialised in the derived filter class constructor.
     std::shared_ptr<AudioFilterResponse> filterResponse;
     
     float sampleRate = 0.0;
@@ -77,9 +77,7 @@ protected:
     float filterGain = 1.0;
     float qFactor = 0.0;
     
-    
     int filterType = 0;
-    
 };
 
 

@@ -14,11 +14,12 @@ CustomAudioParameter::CustomAudioParameter(const String& paramName, int initPara
 {
     name = paramName;
     parameterType = initParameterType;
+    
+    normalisedValue.store(0.0f);
 }
 
 
 CustomAudioParameter::CustomAudioParameter(const String& paramName, int initParameterType, std::function<void(float)> initSetValueCallback)
-
 {
     name = paramName;
     parameterType = initParameterType;
@@ -34,29 +35,27 @@ CustomAudioParameter::~CustomAudioParameter()
 
 float CustomAudioParameter::getValue() const
 {
-    return value;
+    return normalisedValue.load();
 }
 
 
 void CustomAudioParameter::setValue (float newValue)
 {
-    value = newValue;
+    normalisedValue.store(newValue);
     
-    //Sets customValue parameter for different parameter types
+    //Set relevant callback parameter for different parameter types
     switch (parameterType) {
         case Regular_Float_Param:
-            customValue = value;
+            if (setValueCallback != nullptr)
+                 setValueCallback(normalisedValue.load());
             break;
         case Volt_Octave_Param:
-            customValue = calcValueVoltOctaveExp(customMinValue, customMaxValue, value);
+            customValue = calcValueVoltOctaveExp(customMinValue, customMaxValue, normalisedValue.load());
+            if (setValueCallback != nullptr)
+                setValueCallback(customValue);
+            
         default:
             break;
-    }
-    
-    //If we have a setValueCallback function call it with our customValue
-    if (setValueCallback != nullptr)
-    {
-            setValueCallback(customValue);
     }
    
 }
@@ -108,7 +107,7 @@ String CustomAudioParameter::getLabel() const
         case Volt_Octave_Param:
             labelValue = "Hz";
             break;
-            
+        
         default:
             break;
     }
@@ -120,7 +119,6 @@ String CustomAudioParameter::getLabel() const
 float CustomAudioParameter::getValueForText(const String& text) const
 {
     return text.getFloatValue();
-    
 }
 
 

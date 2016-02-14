@@ -92,7 +92,9 @@ void FilterGuiDemoAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-void FilterGuiDemoAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+template <typename FloatType>
+void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
+                                                MidiBuffer& midiMessages)
 {
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't

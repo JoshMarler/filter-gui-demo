@@ -37,7 +37,6 @@ float VAOnePoleFilterResponse::calculateMagnitudeReponse(float frequency) const
     /* This is the digital transfer function which is equal to the analogue transfer function
     evaluated at H(s) where s = (2/T) * tan(wd*T/2).
     See Art Of VA Filter Design 3.8 Bilinear Transform Section */
-    
     switch (this->getFilterType()) {
         case AudioFilter::filterTypeList::LowPass:
             //VA Lowpass Frequency response wc/s+wc

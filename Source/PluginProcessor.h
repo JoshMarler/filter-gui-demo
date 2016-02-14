@@ -28,7 +28,17 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-    void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
+    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override
+    {
+        jassert (! isUsingDoublePrecision());
+        process (buffer, midiMessages);
+    }
+    
+    void processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override
+    {
+        jassert (isUsingDoublePrecision());
+        process (buffer, midiMessages);
+    }
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -54,6 +64,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    template <typename FloatType>
+    void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterGuiDemoAudioProcessor)
 };

@@ -21,12 +21,10 @@ by Vadim Zavalishin see:
  NOTE : Need to implement oversampling as frequency response is incorrect at high frequencies approaching nyquist
  there is lost energy/gain which will be apparent on the filters response display (common issue with VA filters). This will be addressed in the next version. */
 
-
 class VAOnePoleFilter : public AudioFilter
 {
 
 public:
-    
     VAOnePoleFilter();
     
     virtual ~VAOnePoleFilter();
@@ -54,13 +52,11 @@ class VAOnePoleFilterResponse : public AudioFilterResponse
 public:
     
     VAOnePoleFilterResponse(const AudioFilter& owningFilter);
-    
     virtual ~VAOnePoleFilterResponse();
     
     float calculateMagnitudeReponse(float frequency) const;
     
 private:
-    
     int magnitudeBufferSize = 0.0;
     
 };

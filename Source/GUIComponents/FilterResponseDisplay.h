@@ -29,6 +29,10 @@ public:
     
     void paint(Graphics& g) override;
     
+    //Filter response type deawing functions
+    void drawLowpass();
+    void drawHighpass();
+    
     //Sets the colour of the filters response curve
     void setMagResponseColour(Colour newColour);
     
@@ -47,6 +51,7 @@ private:
     
     //Drawing / Graphics members
     Path magnitudeResponsePath;
+    float filterPathThickness = 4.0;
     Colour magResponseColour;
     Colour displayBackgroundColor;
     

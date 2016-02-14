@@ -30,10 +30,10 @@ public:
     
     
     /** Functions for setting the custom min and max values for use in custom parameter type calculations.
-        If using any param type other than Regular_Float_Param these should be called before use/right after construction.
-     
-        For example for a Volt_Octave_Param customMinValue would be the mminFrequencyLimit and customMaxValue the maxFrequencyLimit
-        in calcValueVoltOctaveExp(float minFrequencyLimit, float maxFrequencyLimit, float paramValue).
+        If using any param type other than Regular_Float_Param these should be called before use
+        righ after construction.
+        For example for a Volt_Octave_Param customMinValue would be the minFrequencyLimit
+        and customMaxValue the maxFrequencyLimit in calcValueVoltOctaveExp(float minFrequencyLimit, float maxFrequencyLimit, float paramValue).
     */
     void setCustomMinValue(float newCustomMinValue);
     void setCustomMaxValue(float newCustomMaxValue);
@@ -45,7 +45,7 @@ public:
     float getValueForText (const String& text) const override;
     
     /** Maps 0.0 - 1.0 values required by host into relative frequency hz values within min - max limits.
-        Code original from Will Pirkle - see ...
+        Code originally from Will Pirkle - see ...
     */
     float calcValueVoltOctaveExp(float minFrequencyLimit, float maxFrequencyLimit, float paramValue);
     
@@ -63,10 +63,9 @@ public:
     
 private:
     
-    //Wrap these up as std::atomic types and then call atmoic load / store
     float defaultValue = 0.5;
-    float value = 0.0;
     
+    std::atomic<float> normalisedValue;
     float customValue = 0.0;
     float customMinValue = 0.0;
     float customMaxValue = 0.0;
