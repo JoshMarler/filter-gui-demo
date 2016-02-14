@@ -21,9 +21,7 @@
 
 class FilterResponseDisplay : public Component
 {
-    
 public:
-    
     FilterResponseDisplay(const AudioFilterResponse& filterResponse);
     ~FilterResponseDisplay();
     
@@ -43,9 +41,7 @@ public:
     
     void setMaxDecibels(float maxDB);
     
-    
 private:
-    
     //The AudioFilterResponse object the display will use to draw the magnitude response curve
     const AudioFilterResponse* filterResponseToUse;
     

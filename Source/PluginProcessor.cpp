@@ -109,7 +109,7 @@ void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     // audio processing...
     for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
     {
-        float* channelData = buffer.getWritePointer (channel);
+        FloatType* const channelData = buffer.getWritePointer (channel);
 
         // ..do something to the data...
     }

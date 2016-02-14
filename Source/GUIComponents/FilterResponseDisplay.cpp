@@ -46,7 +46,7 @@ void FilterResponseDisplay::paint(Graphics& g)
             drawLowpass();
             break;
         case AudioFilter::filterTypeList::HighPass:
-            
+            drawHighpass();
             break;
     }
 
@@ -97,7 +97,6 @@ void FilterResponseDisplay::drawLowpass()
 //Draws filter display path for Highpass response
 void FilterResponseDisplay::drawHighpass()
 {
-    
     float freq = 0.0;
     float magnitudeDBValue = 0.0;
     
@@ -141,7 +140,6 @@ float FilterResponseDisplay::xAxisToFrequency(float xPos)
     
     //Computes frequency from position on x axis of component. So if the xPos is equal to the component width the value returned will be maxFrequency.
     float frequency = minFrequency * pow((maxFrequency / minFrequency), (xPos / width));
-    
     return frequency;
 }
 
@@ -158,7 +156,6 @@ float FilterResponseDisplay::dbToYAxis(float dbGain)
        correct component position for drawing. Test these calculations with a dbGain value equal to maxDecibels and
        yPostion computed will be equal to the filterResponseDisplay's height as is correct. */
     float yPosition = scaledDbGain + (height / 2);
-    
     return yPosition;
 }
 
