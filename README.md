@@ -9,8 +9,8 @@ possible to understand.
 Future revisions of this example plugin will implement further filter types and response shapes along with oversampling
 and some other goodies. 
 
-Feel free to make any suggestions to this repo/code, I am hoping this plugin will be usefull for JUCE newbies and give a 
-starting point for a handy GUI class for others. I will gradually attempt to make the filter response GUI component more
-reusable and generic for inclucion into peoples projects. 
+Feel free to make any suggestions to this repo/code, I am hoping this plugin will be useful for JUCE newbies and give a 
+starting point for a handy GUI class for others. I will gradually attempt to make the filter response GUI component/class more
+reusable and generic for inclusion into people's projects. 
 
 Josh 

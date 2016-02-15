@@ -32,7 +32,7 @@ public:
     // Must be called before playback starts to set sample rate etc.
     void initializeFilter(float initSampRate, float initMinFrequency, float initMaxFrequency) override;
     
-    void setCutoffFrequency(float cutoff) override;
+    void setCutoff(float cutoff) override;
     float processFilter(float input, int channel) override;
     
 private:

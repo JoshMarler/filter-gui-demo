@@ -54,7 +54,6 @@ float VAOnePoleFilterResponse::calculateMagnitudeReponse(float frequency) const
     
     //Convert to db for log db response display
     magnitude = Decibels::gainToDecibels(magnitude);
-    
     return  magnitude;
 }
 
@@ -89,7 +88,7 @@ void VAOnePoleFilter::initializeFilter(float initSampleRate, float initMinFreque
 }
 
 
-void VAOnePoleFilter::setCutoffFrequency(float newCutoff)
+void VAOnePoleFilter::setCutoff(float newCutoff)
 {
     cutoffFrequency = newCutoff;
     
@@ -100,7 +99,7 @@ void VAOnePoleFilter::setCutoffFrequency(float newCutoff)
     /* Desired analogue frequency / these are virtual analogue filters so this is the cutoff / frequency response we require for out filter algorithm */
     float wa = (2/T) * tan(wd*T/2);
     
-    //Passing in pre-warped/analogue cutoff frequency to use in virtual analogue frequecny response calculations
+    //Passing in pre-warped/analogue cutoff frequency to use in virtual analogue frequeny response calculations
     filterResponse->setCutoffFrequency(wa);
     
     float g = wa * T/2;

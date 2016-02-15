@@ -24,21 +24,18 @@ AudioFilterResponse::~AudioFilterResponse()
 }
 
 
-
 /*AudioFilter Method Declerations*/
-
 AudioFilter::AudioFilter()
 {
     filterType = LowPass;
 }
-
 
 AudioFilter::~AudioFilter()
 {
 
 }
 
-void AudioFilter::setCutoffFrequency(float newCutoffFrequency)
+void AudioFilter::setCutoff(float newCutoffFrequency)
 {
     
     cutoffFrequency = newCutoffFrequency;
@@ -47,16 +44,32 @@ void AudioFilter::setCutoffFrequency(float newCutoffFrequency)
     filterResponse->setCutoffFrequency(newCutoffFrequency);
 }
 
-void AudioFilter::setFilterGain(float newGain)
+
+float AudioFilter::getCutoff() const
+{
+    return cutoffFrequency;
+}
+
+void AudioFilter::setGain(float newGain)
 {
     filterGain = newGain;
     //Sets the gain of this filters FilterResponse object for use in response/magnitude response calculations.
     filterResponse->setGain(newGain);
 }
 
+float AudioFilter::getGain() const
+{
+    return filterGain;
+}
+
 void AudioFilter::setQFactor(float newQFactor)
 {
     qFactor = newQFactor;
+}
+
+float AudioFilter::getQFactor() const
+{
+    return qFactor;
 }
 
 void AudioFilter::setFilterType(int type)
@@ -67,21 +80,6 @@ void AudioFilter::setFilterType(int type)
 int AudioFilter::getCurrentFilterType() const
 {
     return filterType;
-}
-
-float AudioFilter::getFilterCutoff() const
-{
-    return cutoffFrequency;
-}
-
-float AudioFilter::getFilterQFactor() const
-{
-    return qFactor;
-}
-
-float AudioFilter::getFilterGain() const
-{
-    return filterGain;
 }
 
 AudioFilterResponse& AudioFilter::getFilterResponse()

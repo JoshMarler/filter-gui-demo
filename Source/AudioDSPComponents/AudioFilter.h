@@ -28,33 +28,33 @@ public:
     virtual ~AudioFilter();
     
     //Filters deriving from this class must implement their process method
-    virtual float processFilter(float input, int channel) = 0;
+    virtual float processFilter (float input, int channel) = 0;
     
     /* Filters deriving from this class must implement their own initialization code - i.e for flushing storage registers/state holders etc.
        Must be called before playback starts to set sample rate etc. */
-    virtual void initializeFilter(float initSampleRate, float initMinFrequency, float initMaxFrequency) = 0;
+    virtual void initializeFilter (float initSampleRate, float initMinFrequency, float initMaxFrequency) = 0;
     
-    inline void setSampleRate(float newSampRate) {sampleRate = newSampRate;}
-    inline float getSampleRate() const{return sampleRate;}
+    inline void setSampleRate (float newSampRate) {sampleRate = newSampRate;}
+    inline float getSampleRate() const {return sampleRate;}
     
-    inline void setMinFrequency(float newMinFrequency) {minFrequency = newMinFrequency;}
+    inline void setMinFrequency (float newMinFrequency) {minFrequency = newMinFrequency;}
     inline float getMinFrequency() const {return minFrequency;}
     
-    inline void setMaxFrequency(float newMaxFrequency) {maxFrequency = newMaxFrequency;}
+    inline void setMaxFrequency (float newMaxFrequency) {maxFrequency = newMaxFrequency;}
     inline float getMaxFrequency() const {return maxFrequency;}
     
    
     /* Parameter set and get methods made virtual to facilitate use in different types of filters - i.e virtual analogue filters where
        cutoff frequencies may need to be pre-warped etc. */
-    virtual void setCutoffFrequency(float newCutoff);
-    virtual float getFilterCutoff() const;
-    virtual void setQFactor(float newQFactor);
-    virtual float getFilterQFactor() const;
-    virtual void setFilterGain(float newGain);
-    virtual float getFilterGain() const;
+    virtual void setCutoff (float newCutoff);
+    virtual float getCutoff() const;
+    virtual void setQFactor (float newQFactor);
+    virtual float getQFactor() const;
+    virtual void setGain (float newGain);
+    virtual float getGain() const;
     
     
-    void setFilterType(int newFilterType);
+    void setFilterType (int newFilterType);
     int getCurrentFilterType() const;
     
     AudioFilterResponse& getFilterResponse();
@@ -81,21 +81,27 @@ protected:
 };
 
 
+/*  JWM - NOTE - Going to get rid of this class, it's overkill for the demo and means a mutual dependency that probably isn't necessary.
+    Will change this to put calculateMagnitudeResponse function into the filter class itself. Decide whether to make pure virtual or 
+    just return 0.0 as default so filter is useable without having to calculate.
+ */
+
+
 //The frequency response of the AudioFilter object
 class AudioFilterResponse
 {
 public:
     
-    AudioFilterResponse(const AudioFilter& initOwningAudioFilter);
+    AudioFilterResponse (const AudioFilter& initOwningAudioFilter);
     virtual ~AudioFilterResponse();
     
-    virtual float calculateMagnitudeReponse(float frequency) const = 0;
+    virtual float calculateMagnitudeReponse (float frequency) const = 0;
     
     //Call this function from inside the owning AudioFilter object's setCutoffFrequency function so that the response is updated in sync.
-    inline void setCutoffFrequency(float newCutoffFrequency) {cutOffFrequency = newCutoffFrequency;}
+    inline void setCutoffFrequency (float newCutoffFrequency) {cutOffFrequency = newCutoffFrequency;}
     
     //Call this function from inside the owning AudioFilter object's setFilterGain so that the response is updated in sync.
-    inline void setGain(float newGain) {gain = newGain;}
+    inline void setGain (float newGain) {gain = newGain;}
     
     inline float getCutoffFrequency() const {return cutOffFrequency;}
     inline float getGain() const {return gain;}
@@ -106,10 +112,6 @@ public:
     inline float getSampleRate() const {return owningAudioFilter->getSampleRate();}
     
     inline int getFilterType() const {return owningAudioFilter->getCurrentFilterType();}
-    
-protected:
-    
-    
     
 private:
     

@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "AudioFilter.h"
 
-// A filter maginute response display class
+// A filter magnitude response display class
 // modified from and based on some code by semanticaudio
 // see  https://github.com/semanticaudio/SAFE
 // Check the SAFE FilterGraph class for reference.
@@ -27,7 +27,7 @@ public:
     
     void paint(Graphics& g) override;
     
-    //Filter response type deawing functions
+    //Filter response type drawing functions
     void drawLowpass();
     void drawHighpass();
     
