@@ -10,65 +10,10 @@
 
 #include "VAOnePoleFilter.h"
 
-
-/*VAOnePoleFilterReponse method declerations*/
-
-VAOnePoleFilterResponse::VAOnePoleFilterResponse(const AudioFilter& owningFilter)
-: AudioFilterResponse(owningFilter)
-{
-    
-}
-
-
-VAOnePoleFilterResponse::~VAOnePoleFilterResponse()
-{
-
-}
-
-
-float VAOnePoleFilterResponse::calculateMagnitudeReponse(float frequency) const
-{
-    float magnitude = 0.0;
-    float T = 1/this->getSampleRate();
-    float wd =  2 * M_PI * frequency;
-    float sValue =  (2/T) * tan(wd*T/2);
-    float cutOffValue = this->getCutoffFrequency();
-    
-    /* This is the digital transfer function which is equal to the analogue transfer function
-    evaluated at H(s) where s = (2/T) * tan(wd*T/2).
-    See Art Of VA Filter Design 3.8 Bilinear Transform Section */
-    switch (this->getFilterType()) {
-        case AudioFilter::filterTypeList::LowPass:
-            //VA Lowpass Frequency response wc/s+wc
-            magnitude = cutOffValue/(sValue + cutOffValue);
-            break;
-        case AudioFilter::filterTypeList::HighPass:
-            //VA Highpass Frequency response s/s+wc
-            magnitude = sValue/(sValue + cutOffValue);
-            break;
-        default:
-            break;
-    }
-    
-    magnitude = magnitude * this->getGain();
-    
-    //Convert to db for log db response display
-    magnitude = Decibels::gainToDecibels(magnitude);
-    return  magnitude;
-}
-
-
-
-
-
-/* VAOnePoleFilter method declerations */
-
 VAOnePoleFilter::VAOnePoleFilter()
 {
-    //Initializing base class filter response member object ptr to VAOnePoleFilterResponse object
-    filterResponse.reset(new VAOnePoleFilterResponse(*this));
+    
 }
-
 
 VAOnePoleFilter::~VAOnePoleFilter()
 {
@@ -78,9 +23,9 @@ VAOnePoleFilter::~VAOnePoleFilter()
 //Set variables and flush state registers in initialization function. Must be called before playback starts
 void VAOnePoleFilter::initializeFilter(float initSampleRate, float initMinFrequency, float initMaxFrequency)
 {
-    sampleRate = initSampleRate;
-    minFrequency = initMinFrequency;
-    maxFrequency = initMaxFrequency;
+    this->setSampleRate(initSampleRate);
+    this->setMinFrequency(initMinFrequency);
+    this->setMaxFrequency(initMaxFrequency);
     
     //clear the delay elements/state holders
     z1[0] = 0.0;
@@ -90,17 +35,16 @@ void VAOnePoleFilter::initializeFilter(float initSampleRate, float initMinFreque
 
 void VAOnePoleFilter::setCutoff(float newCutoff)
 {
-    cutoffFrequency = newCutoff;
+    this->setCutoff(newCutoff);
     
-    //Cutoff prewarping, billinear transform filters see art of va filter design.
-    float wd = 2 * M_PI * cutoffFrequency;
-    float T = 1/sampleRate;
+    //Cutoff prewarping, billinear transform filters - see Art Of VA Filter Design.
+    float wd = 2 * M_PI * this->getCutoff();
+    float T = 1/this->getSampleRate();
     
     /* Desired analogue frequency / these are virtual analogue filters so this is the cutoff / frequency response we require for out filter algorithm */
     float wa = (2/T) * tan(wd*T/2);
     
-    //Passing in pre-warped/analogue cutoff frequency to use in virtual analogue frequeny response calculations
-    filterResponse->setCutoffFrequency(wa);
+    //filterResponse->setCutoffFrequency(wa);
     
     float g = wa * T/2;
     G = g/(1.0 + g);
@@ -117,14 +61,14 @@ float VAOnePoleFilter::processFilter(float input, int channel)
     
     float highpassOutput = input - lowpassOutput;
     
-    if (this->filterType == LowPass)
+    if (this->getFilterType() == LowPass)
     {
-        return filterGain * lowpassOutput;
+        return this->getGain() * lowpassOutput;
     }
     
-    else if (this->filterType == HighPass)
+    else if (this->getFilterType() == HighPass)
     {
-        return filterGain * highpassOutput;
+        return this->getGain() * highpassOutput;
     }
     
     else
@@ -132,6 +76,43 @@ float VAOnePoleFilter::processFilter(float input, int channel)
         //Unrecognised filter type/invalid argument passed to setFilterType()
         return 0.0;
     }
+}
+
+float VAOnePoleFilter::getMagnitudeResponse(float frequency) const
+{
+    float magnitude = 0.0;
+    float T = 1/this->getSampleRate();
+    
+    //Calculating pre-warped/analogue cutoff frequency to use in virtual analogue frequeny response calculations
+    float wdCutoff = 2 * M_PI * this->getCutoff();
+    float cutOff = (2/T) * tan(wdCutoff*T/2);
+    
+    //Digital frequency to evaluate
+    float wdEval =  2 * M_PI * frequency;
+    float sValue =  (2/T) * tan(wdEval*T/2);
+    
+    
+    /* This is the digital transfer function which is equal to the analogue transfer function
+     evaluated at H(s) where s = (2/T) * tan(wd*T/2) hence why the cutoff used is the pre warped analogue equivalent.
+     See Art Of VA Filter Design 3.8 Bilinear Transform Section */
+    switch (this->getFilterType()) {
+        case AudioFilter::filterTypeList::LowPass:
+            //VA Lowpass Frequency response wc/s+wc
+            magnitude = cutOff/(sValue + cutOff);
+            break;
+        case AudioFilter::filterTypeList::HighPass:
+            //VA Highpass Frequency response s/s+wc
+            magnitude = sValue/(sValue + cutOff);
+            break;
+        default:
+            break;
+    }
+    
+    magnitude = magnitude * this->getGain();
+    
+    //Convert to db for log db response display
+    magnitude = Decibels::gainToDecibels(magnitude);
+    return  magnitude;
 }
 
 

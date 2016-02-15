@@ -22,8 +22,11 @@
 class FilterResponseDisplay : public Component
 {
 public:
-    FilterResponseDisplay(const AudioFilterResponse& filterResponse);
+    FilterResponseDisplay(const AudioFilter& filter);
     ~FilterResponseDisplay();
+    
+    //Function to update the filter being used for the response display incase of change in processor
+    void setFilterToUse(const AudioFilter& filter);
     
     void paint(Graphics& g) override;
     
@@ -43,7 +46,7 @@ public:
     
 private:
     //The AudioFilterResponse object the display will use to draw the magnitude response curve
-    const AudioFilterResponse* filterResponseToUse;
+    const AudioFilter* filterToUse;
     
     //Drawing / Graphics members
     Path magnitudeResponsePath;

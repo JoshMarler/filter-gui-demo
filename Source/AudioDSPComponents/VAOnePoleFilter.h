@@ -33,6 +33,9 @@ public:
     void initializeFilter(float initSampRate, float initMinFrequency, float initMaxFrequency) override;
     
     void setCutoff(float cutoff) override;
+    
+    //Overriding base class filter response functions for VA One Pole response
+    float getMagnitudeResponse(float freq) const  override;
     float processFilter(float input, int channel) override;
     
 private:
@@ -44,22 +47,5 @@ private:
     // Big G value for billinear cutoff/pre-warping
     float G = 0.0;
 };
-
-
-/* Frequency response of VAOnePoleFilter Magnitude response calculated using transfer function calculations from The Art of VA Filter Design by Vadim Zavalishin */
-class VAOnePoleFilterResponse : public AudioFilterResponse
-{
-public:
-    
-    VAOnePoleFilterResponse(const AudioFilter& owningFilter);
-    virtual ~VAOnePoleFilterResponse();
-    
-    float calculateMagnitudeReponse(float frequency) const;
-    
-private:
-    int magnitudeBufferSize = 0.0;
-    
-};
-
 
 #endif  // VAONEPOLEFILTER_H_INCLUDED

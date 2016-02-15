@@ -11,23 +11,31 @@
 #include "FilterResponseDisplay.h"
 
 
-FilterResponseDisplay::FilterResponseDisplay(const AudioFilterResponse& filterReponse)
+FilterResponseDisplay::FilterResponseDisplay(const AudioFilter& filter)
 {
-    filterResponseToUse = &filterReponse;
+    filterToUse = &filter;
+    minFrequency = filterToUse->getMinFrequency();
+    maxFrequency = filterToUse->getMaxFrequency();
     
-    minFrequency = filterResponseToUse->getMinFrequency();
-    maxFrequency = filterResponseToUse->getMaxFrequency();
-    
-    /* Sets the filter response displays min - max decibel range - Try changing this value to lower or higher decibel ranges 
-       to see the effect on the frequency response that is shown. If implementing a filter with resonant peaks you will need 
-       to ensure the peak values do not exceed the maxDecibels level */
+    /* 
+        Sets the filter response displays min - max decibel range - Try changing this value to lower or higher decibel ranges
+        to see the effect on the frequency response that is shown. If implementing a filter with resonant peaks you will need
+        to ensure the peak values do not exceed the maxDecibels level.
+     */
     maxDecibels = 20.00;
 }
 
 
 FilterResponseDisplay::~FilterResponseDisplay()
 {
+    
+}
 
+void FilterResponseDisplay::setFilterToUse(const AudioFilter& filter)
+{
+    filterToUse = &filter;
+    minFrequency = filterToUse->getMinFrequency();
+    maxFrequency = filterToUse->getMaxFrequency();
 }
 
 void FilterResponseDisplay::paint(Graphics& g)
@@ -40,7 +48,7 @@ void FilterResponseDisplay::paint(Graphics& g)
     
     magnitudeResponsePath.clear();
     
-    int filterType = filterResponseToUse->getFilterType();
+    int filterType = filterToUse->getFilterType();
     switch (filterType) {
         case AudioFilter::filterTypeList::LowPass:
             drawLowpass();
@@ -73,18 +81,18 @@ void FilterResponseDisplay::drawLowpass()
      Try commeting out - (filterPathThickness/2) to see the effect. This line hides the highlighted path edge so that the path edge/highlight
      shows only on the top of the magnitude response path. */
     magnitudeResponsePath.startNewSubPath((0.0f - (filterPathThickness/2)), (getBottom() - (filterPathThickness/2)));
-    magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(minFrequency);
+    magnitudeDBValue = filterToUse->getMagnitudeResponse(minFrequency);
     magnitudeResponsePath.lineTo((0.0f - (filterPathThickness/2)) , dbToYAxis(magnitudeDBValue));
     
     for (float xPos = 0.0; xPos < ((float) getWidth() + (filterPathThickness/2)); xPos += (filterPathThickness/2))
     {
         //Get the frequency value for the filter's magnitude response calculation
         freq = xAxisToFrequency(xPos);
-        magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(freq);
+        magnitudeDBValue = filterToUse->getMagnitudeResponse(freq);
         magnitudeResponsePath.lineTo(xPos, dbToYAxis(magnitudeDBValue));
     }
     
-    magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(maxFrequency);
+    magnitudeDBValue = filterToUse->getMagnitudeResponse(maxFrequency);
     magnitudeResponsePath.lineTo(((float) getWidth() + (filterPathThickness/2)), dbToYAxis(magnitudeDBValue));
     
     /* Dirty Trick to close the path nicely when cutoff is at max level (this is not apparent for virtual analogue filters that have not been
@@ -101,7 +109,7 @@ void FilterResponseDisplay::drawHighpass()
     float magnitudeDBValue = 0.0;
     
     //If HighPass start path on right hand side of component i.e at component width.
-    magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(maxFrequency);
+    magnitudeDBValue = filterToUse->getMagnitudeResponse(maxFrequency);
     magnitudeResponsePath.startNewSubPath(((float) getWidth() + (filterPathThickness/2)), (getBottom() - (filterPathThickness/2)));
     magnitudeResponsePath.lineTo(((float) getWidth() + (filterPathThickness/2)), dbToYAxis(magnitudeDBValue));
     
@@ -109,11 +117,11 @@ void FilterResponseDisplay::drawHighpass()
     {
         //Get the frequency value for the filter's magnitude response calculation
         freq = xAxisToFrequency(xPos);
-        magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(freq);
+        magnitudeDBValue = filterToUse->getMagnitudeResponse(freq);
         magnitudeResponsePath.lineTo(xPos, dbToYAxis(magnitudeDBValue));
     }
     
-    magnitudeDBValue = filterResponseToUse->calculateMagnitudeReponse(minFrequency);
+    magnitudeDBValue = filterToUse->getMagnitudeResponse(minFrequency);
     magnitudeResponsePath.lineTo ((0.0f - (filterPathThickness/2)), dbToYAxis(magnitudeDBValue));
     
     /* Dirty trick again to close the path nicely when cutoff at min level for High Pass - try cmmenting this line out to se the visual
@@ -137,7 +145,6 @@ void FilterResponseDisplay::setDisplayBackgroundColour(Colour newColour)
 float FilterResponseDisplay::xAxisToFrequency(float xPos)
 {
     float width = getWidth();
-    
     //Computes frequency from position on x axis of component. So if the xPos is equal to the component width the value returned will be maxFrequency.
     float frequency = minFrequency * pow((maxFrequency / minFrequency), (xPos / width));
     return frequency;

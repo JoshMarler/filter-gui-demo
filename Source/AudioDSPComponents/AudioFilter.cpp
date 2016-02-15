@@ -10,21 +10,6 @@
 
 #include "AudioFilter.h"
 
-
-/*AudioFilterResponse Method Declerations*/
-
-AudioFilterResponse::AudioFilterResponse(const AudioFilter& initOwningAudioFilter)
-{
-    owningAudioFilter = &initOwningAudioFilter;
-}
-
-AudioFilterResponse::~AudioFilterResponse()
-{
-
-}
-
-
-/*AudioFilter Method Declerations*/
 AudioFilter::AudioFilter()
 {
     filterType = LowPass;
@@ -37,11 +22,7 @@ AudioFilter::~AudioFilter()
 
 void AudioFilter::setCutoff(float newCutoffFrequency)
 {
-    
     cutoffFrequency = newCutoffFrequency;
-    
-    //Sets the cutoff frequency of this filters FilterResponse object for use in response/magnitude response calculations.
-    filterResponse->setCutoffFrequency(newCutoffFrequency);
 }
 
 
@@ -53,8 +34,6 @@ float AudioFilter::getCutoff() const
 void AudioFilter::setGain(float newGain)
 {
     filterGain = newGain;
-    //Sets the gain of this filters FilterResponse object for use in response/magnitude response calculations.
-    filterResponse->setGain(newGain);
 }
 
 float AudioFilter::getGain() const
@@ -77,13 +56,18 @@ void AudioFilter::setFilterType(int type)
     filterType = type;
 }
 
-int AudioFilter::getCurrentFilterType() const
+int AudioFilter::getFilterType() const
 {
     return filterType;
 }
 
-AudioFilterResponse& AudioFilter::getFilterResponse()
+//Default filter response implementations
+float AudioFilter::getMagnitudeResponse(float freq) const
 {
-    return *filterResponse;
+    return 0.0;
 }
 
+float AudioFilter::getPhaseResponse(float freq) const
+{
+    return 0.0;
+}
