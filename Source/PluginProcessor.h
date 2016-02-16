@@ -30,18 +30,8 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override
-    {
-        jassert (! isUsingDoublePrecision());
-        process (buffer, midiMessages);
-    }
+    void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
     
-    void processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override
-    {
-        jassert (isUsingDoublePrecision());
-        process (buffer, midiMessages);
-    }
-
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
@@ -67,16 +57,18 @@ public:
     
     //Returns the processors AudioFilter instance for GUI code etc.
     AudioFilter& getAudioFilter();
-
-private:
-    //==============================================================================
-    template <typename FloatType>
-    void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
-    
-    std::unique_ptr<AudioFilter> filter1;
     
     CustomAudioParameter* filterCutoffParam;
     CustomAudioParameter* filterGainParam;
+
+private:
+    //==============================================================================
+  
+    
+    std::unique_ptr<AudioFilter> filter1;
+    
+    //CustomAudioParameter* filterCutoffParam;
+    //CustomAudioParameter* filterGainParam;
     
     //Default setup values for filter etc.
     const float defaultSampleRate = 44100.00;

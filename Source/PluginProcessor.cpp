@@ -13,7 +13,7 @@
 
 
 //==============================================================================
-FilterGuiDemoAudioProcessor::FilterGuiDemoAudioProcessor()
+FilterGuiDemoAudioProcessor::FilterGuiDemoAudioProcessor() : filter1(new VAOnePoleFilter())
 {
     /* The lambda is capturing a value copy of the this pointer to the audio processor. The processor will be destroyed after the parameter object so
      this is safe.*/
@@ -109,9 +109,7 @@ void FilterGuiDemoAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-template <typename FloatType>
-void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
-                                                MidiBuffer& midiMessages)
+void FilterGuiDemoAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     float numSamples = buffer.getNumSamples();
     float currentSampleRate = getSampleRate();
@@ -134,8 +132,8 @@ void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     // MAIN AUDIO PROCESSING BLOCK. PROCESS FILTER TWICE FOR STEREO CHANNELS
     for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
     {
-        const FloatType* input = buffer.getReadPointer(channel);
-        FloatType* output = buffer.getWritePointer (channel);
+        const float* input = buffer.getReadPointer(channel);
+        float* output = buffer.getWritePointer (channel);
         
         for (int i = 0; i < numSamples; i++)
         {

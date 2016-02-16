@@ -14,11 +14,56 @@
 
 //==============================================================================
 FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiDemoAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+    : AudioProcessorEditor (&p), processor (p), customLookAndFeel(),
+      filterResponseDisplay(processor.getAudioFilter())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (600, 500);
+    
+    FilterGuiDemoAudioProcessorEditor::setLookAndFeel(&customLookAndFeel);
+    
+    //Setup Components
+    addAndMakeVisible(frequencyCutoffSlider);
+    frequencyCutoffSlider.setName("FilterCutoff");
+    frequencyCutoffSlider.setSliderStyle(Slider::Rotary);
+    frequencyCutoffSlider.setRange(0.0, 1.0, 0.01);
+    frequencyCutoffSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
+    frequencyCutoffSlider.setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
+    frequencyCutoffSlider.addListener(this);
+    
+    addAndMakeVisible(filterGainSlider);
+    filterGainSlider.setName("FilterGain");
+    filterGainSlider.setSliderStyle(Slider::Rotary);
+    filterGainSlider.setRange(0.0, 1.0, 0.05);
+    filterGainSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
+    filterGainSlider.setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
+    filterGainSlider.addListener(this);
+    
+    addAndMakeVisible(filterCutoffLabel);
+    filterCutoffLabel.setText("Cutoff", juce::NotificationType::dontSendNotification);
+    filterCutoffLabel.setFont(Font ("Cracked", 27.50f, Font::plain));
+    filterCutoffLabel.setColour(Label::textColourId, Colours::greenyellow);
+    
+    addAndMakeVisible(filterGainLabel);
+    filterGainLabel.setText("Gain", juce::NotificationType::dontSendNotification);
+    filterGainLabel.setFont(Font ("Cracked", 27.50f, Font::plain));
+    filterGainLabel.setColour(Label::textColourId, Colours::greenyellow);
+    
+    addAndMakeVisible(filterTypeDropDown);
+    filterTypeDropDown.addItem("LowPass", 1);
+    filterTypeDropDown.addItem("HighPass", 2);
+    filterTypeDropDown.setColour(ComboBox::outlineColourId, Colours::greenyellow);
+    filterTypeDropDown.setColour(ComboBox::backgroundColourId, Colours::black);
+    filterTypeDropDown.setColour(ComboBox::textColourId, Colours::greenyellow);
+    filterTypeDropDown.setColour(ComboBox::buttonColourId, Colours::greenyellow);
+    filterTypeDropDown.setSelectedId(1);
+    filterTypeDropDown.addListener(this);
+    
+    addAndMakeVisible(filterResponseDisplay);
+    filterResponseDisplay.setMagResponseColour(Colours::greenyellow);
+    filterResponseDisplay.setDisplayBackgroundColour(Colours::grey);
+    filterResponseDisplay.setBounds(50, 150, 500, 200);
 }
 
 FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()
@@ -26,17 +71,85 @@ FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()
 }
 
 //==============================================================================
+AudioProcessorParameter* FilterGuiDemoAudioProcessorEditor::getParameterFromSlider(const Slider* slider) const
+{
+    if (slider == &frequencyCutoffSlider)
+    {
+        return processor.filterCutoffParam;
+    }
+    
+    else if (slider == &filterGainSlider)
+    {
+        return processor.filterGainParam;
+    }
+    return nullptr;
+}
+
+//==============================================================================
+void FilterGuiDemoAudioProcessorEditor::sliderValueChanged(Slider* slider)
+{
+    
+    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
+    {
+        param->setValueNotifyingHost((float) slider->getValue());
+        
+        //Dirty way of getting the filter response display to repaint / update on cutoff change.
+        //Probably a better way to do this.
+        filterResponseDisplay.repaint();
+    }
+}
+
+//==============================================================================
+void FilterGuiDemoAudioProcessorEditor::sliderDragStarted(Slider* slider)
+{
+    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
+    {
+        param->beginChangeGesture();
+    }
+}
+
+//==============================================================================
+void FilterGuiDemoAudioProcessorEditor::sliderDragEnded(Slider* slider)
+{
+    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
+    {
+        param->endChangeGesture();
+    }
+}
+
+//==============================================================================
+void FilterGuiDemoAudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatChanged)
+{
+    //In here set filter type and also update filter response display's filter type
+    if (comboBoxThatChanged == &filterTypeDropDown)
+    {
+        int filterTypeIndex = filterTypeDropDown.getSelectedItemIndex();
+        processor.getAudioFilter().setFilterType(filterTypeIndex);
+        
+        //Repaint response display for filter type change
+        filterResponseDisplay.repaint();
+    }
+}
+
+//==============================================================================
 void FilterGuiDemoAudioProcessorEditor::paint (Graphics& g)
 {
-    g.fillAll (Colours::white);
-
-    g.setColour (Colours::black);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
+    g.fillAll (Colours::black);
 }
 
 void FilterGuiDemoAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+    
+    filterResponseDisplay.setBounds(50, 150, 500, 200);
+    filterTypeDropDown.setBounds(225, 50, 150, 30);
+    
+    filterCutoffLabel.setBounds(100, 380, 130, 20);
+    frequencyCutoffSlider.setBounds(100, 375, 135, 135);
+    frequencyCutoffSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 75, 20);
+    
+    filterGainLabel.setBounds(445, 380, 130, 20);
+    filterGainSlider.setBounds(440, 375, 135, 135);
+    filterGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 75, 20);
 }

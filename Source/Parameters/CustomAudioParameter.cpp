@@ -10,11 +10,10 @@
 
 #include "CustomAudioParameter.h"
 
-CustomAudioParameter::CustomAudioParameter(const String& paramName, int initParameterType)
+CustomAudioParameter::CustomAudioParameter(const String& paramName, int initParameterType) : normalisedValue(0.0)
 {
     name = paramName;
     parameterType = initParameterType;
-    normalisedValue.store(0.0f);
 }
 
 
@@ -28,7 +27,7 @@ CustomAudioParameter::CustomAudioParameter(const String& paramName, int initPara
 
 CustomAudioParameter::~CustomAudioParameter()
 {
-
+   
 }
 
 

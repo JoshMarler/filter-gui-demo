@@ -70,7 +70,7 @@ public:
         HighPass
     };
     
-private:
+protected:
     
     float sampleRate = 0.0;
     float minFrequency = 0.0;
