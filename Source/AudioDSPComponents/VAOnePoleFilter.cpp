@@ -53,6 +53,7 @@ void VAOnePoleFilter::setCutoff(float newCutoff)
 
 float VAOnePoleFilter::processFilter(float input, int channel)
 {
+    float output = 0.0;
     float v = (input - z1[channel]) * G;
     float lowpassOutput = v + z1[channel];
     
@@ -61,21 +62,18 @@ float VAOnePoleFilter::processFilter(float input, int channel)
     
     float highpassOutput = input - lowpassOutput;
     
-    if (this->getFilterType() == LowPass)
-    {
-        return this->getGain() * lowpassOutput;
+    switch (this->getFilterType()) {
+            case AudioFilter::filterTypeList::LowPass:
+                output = this->getGain() * lowpassOutput;
+            break;
+        case AudioFilter::filterTypeList::HighPass:
+            output = this->getGain() * highpassOutput;
+            break;
+        default:
+            break;
     }
     
-    else if (this->getFilterType() == HighPass)
-    {
-        return this->getGain() * highpassOutput;
-    }
-    
-    else
-    {
-        //Unrecognised filter type/invalid argument passed to setFilterType()
-        return 0.0;
-    }
+    return output;
 }
 
 float VAOnePoleFilter::getMagnitudeResponse(float frequency) const

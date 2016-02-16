@@ -13,14 +13,21 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+/*
+    Modified parameter class with some basic added extra's like ability to specify a callback funtion using std::function to be 
+    called whenever parameter value changes. Class also includes a volt octave conversion function usefull for analogue style volt
+    octave controls for filter cutoff knobs etc. Volt octave mapping function pinched with permission of Mr Will Pirkle -
+    Will probably build out this class in future versions and may consider moving code like the volt octave mapping to a utilities
+    library/class.
+ */
 class CustomAudioParameter : public AudioProcessorParameter
-
 {
 
 public:
     
     CustomAudioParameter(const String& paramName, int initParameterType);
     
+    //initSetValueCallback is a callback function you can specify (using a lambda etc) that will be called every time the parameter value changes.
     CustomAudioParameter(const String& paramName, int initParameterType, std::function<void(float)> initSetValueCallback);
     
     ~CustomAudioParameter();
@@ -29,7 +36,8 @@ public:
     void setValue(float newValue) override;
     
     
-    /** Functions for setting the custom min and max values for use in custom parameter type calculations.
+    /** 
+        Functions for setting the custom min and max values for use in custom parameter type calculations.
         If using any param type other than Regular_Float_Param these should be called before use
         righ after construction.
         For example for a Volt_Octave_Param customMinValue would be the minFrequencyLimit
@@ -44,7 +52,8 @@ public:
     String getLabel() const override;
     float getValueForText (const String& text) const override;
     
-    /** Maps 0.0 - 1.0 values required by host into relative frequency hz values within min - max limits.
+    /** 
+        Maps 0.0 - 1.0 values required by host into relative frequency hz values within min - max limits.
         Code originally from Will Pirkle - see ...
     */
     float calcValueVoltOctaveExp(float minFrequencyLimit, float maxFrequencyLimit, float paramValue);
@@ -52,7 +61,8 @@ public:
     String getText(float value, int = 0 /*Maximum String Length - default value provided/optional*/) const override;
     
     
-    /** Custom parameter types - different types will have different calculations/code for setting and using the customValue member.
+    /** 
+        Custom parameter types - different types will have different calculations/code for setting and using the customValue member.
         The customValue member can then be passed to the setValueCallback function.
      */
     enum ParameterTypes
@@ -65,11 +75,14 @@ private:
     
     float defaultValue = 0.5;
     
+    //Using std::atomic for the host/GUI changeable value to stop any data race conditions etc. As per Timur's talk.
     std::atomic<float> normalisedValue;
+    
     float customValue = 0.0;
     float customMinValue = 0.0;
     float customMaxValue = 0.0;
     
+    //Used with ParameterTypes enum to represent filter type, i.e lowpass, highpass etc.
     int parameterType;
     
     String name;

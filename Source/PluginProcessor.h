@@ -12,6 +12,8 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "VAOnePoleFilter.h"
+#include "CustomAudioParameter.h"
 
 
 //==============================================================================
@@ -62,10 +64,25 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    //Returns the processors AudioFilter instance for GUI code etc.
+    AudioFilter& getAudioFilter();
 
 private:
+    //==============================================================================
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
+    
+    std::unique_ptr<AudioFilter> filter1;
+    
+    CustomAudioParameter* filterCutoffParam;
+    CustomAudioParameter* filterGainParam;
+    
+    //Default setup values for filter etc.
+    const float defaultSampleRate = 44100.00;
+    const float defaultMinFilterFrequency = 6.00;
+    const float defaultMaxFilterFrequency = 20000.00;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterGuiDemoAudioProcessor)
 };

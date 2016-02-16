@@ -15,6 +15,20 @@
 //==============================================================================
 FilterGuiDemoAudioProcessor::FilterGuiDemoAudioProcessor()
 {
+    /* The lambda is capturing a value copy of the this pointer to the audio processor. The processor will be destroyed after the parameter object so
+     this is safe.*/
+    auto cutoffParamCallback = [this] (float newCutoff){this->filter1->setCutoff(newCutoff);};
+    filterCutoffParam = new CustomAudioParameter("FilterCutoff", CustomAudioParameter::ParameterTypes::Volt_Octave_Param, cutoffParamCallback);
+    
+    //Setting custom min and max values for filterCutoffParam as parameter is Volt_Octave_Param type. See CustomAudioParameter.h comments.
+    filterCutoffParam->setCustomMinValue(defaultMinFilterFrequency);
+    filterCutoffParam->setCustomMaxValue(defaultMaxFilterFrequency);
+    
+    auto gainParamCallback = [this] (float gain) {this->filter1->setGain(gain);};
+    filterGainParam = new CustomAudioParameter("FilterGain", CustomAudioParameter::ParameterTypes::Regular_Float_Param, gainParamCallback);
+    
+    addParameter(filterCutoffParam);
+    addParameter(filterGainParam);
 }
 
 FilterGuiDemoAudioProcessor::~FilterGuiDemoAudioProcessor()
@@ -96,6 +110,15 @@ template <typename FloatType>
 void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
                                                 MidiBuffer& midiMessages)
 {
+    float numSamples = buffer.getNumSamples();
+    float currentSampleRate = getSampleRate();
+    
+    //Handles filter being added onto an already playing audio track where some hosts will not call prepare to play method.
+    if (filter1->getSampleRate() != currentSampleRate)
+    {
+        filter1->initializeFilter(currentSampleRate, defaultMinFilterFrequency, defaultMaxFilterFrequency);
+    }
+    
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -105,14 +128,23 @@ void FilterGuiDemoAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
+    // MAIN AUDIO PROCESSING BLOCK. PROCESS FILTER TWICE FOR STEREO CHANNELS
     for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
     {
-        FloatType* const channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        const FloatType* input = buffer.getReadPointer(channel);
+        FloatType* output = buffer.getWritePointer (channel);
+        
+        for (int i = 0; i < numSamples; i++)
+        {
+            output[i] = filter1->processFilter(input[i], channel);
+        }
     }
+}
+
+//==============================================================================
+AudioFilter& FilterGuiDemoAudioProcessor::getAudioFilter()
+{
+    return *filter1;
 }
 
 //==============================================================================

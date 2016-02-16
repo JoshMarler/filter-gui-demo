@@ -14,7 +14,6 @@ CustomAudioParameter::CustomAudioParameter(const String& paramName, int initPara
 {
     name = paramName;
     parameterType = initParameterType;
-    
     normalisedValue.store(0.0f);
 }
 
@@ -53,7 +52,6 @@ void CustomAudioParameter::setValue (float newValue)
             customValue = calcValueVoltOctaveExp(customMinValue, customMaxValue, normalisedValue.load());
             if (setValueCallback != nullptr)
                 setValueCallback(customValue);
-            
         default:
             break;
     }
