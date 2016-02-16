@@ -98,6 +98,9 @@ void FilterGuiDemoAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
+    //Initialize our audio filter for playback.
+    filter1->initializeFilter(sampleRate, defaultMinFilterFrequency, defaultMaxFilterFrequency);
 }
 
 void FilterGuiDemoAudioProcessor::releaseResources()
