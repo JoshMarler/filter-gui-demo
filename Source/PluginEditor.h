@@ -15,13 +15,13 @@
 #include "PluginProcessor.h"
 #include "GUIComponents/CustomLookAndFeel.h"
 #include "GUIComponents/FilterResponseDisplay.h"
+#include "GUIComponents/ParameterSlider.h"
 
 
 //==============================================================================
 /**
 */
 class FilterGuiDemoAudioProcessorEditor  : public AudioProcessorEditor,
-                                           public SliderListener,
                                            public ComboBoxListener
 {
 public:
@@ -36,10 +36,6 @@ public:
     AudioProcessorParameter* getParameterFromSlider(const Slider* slider) const;
     
     //==============================================================================
-    void sliderValueChanged(Slider*) override;
-    void sliderDragStarted (Slider*) override;
-    void sliderDragEnded   (Slider*) override;
-    
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 private:
@@ -50,7 +46,7 @@ private:
     //GUI Components
     CustomLookAndFeel customLookAndFeel;
     FilterResponseDisplay filterResponseDisplay;
-    Slider frequencyCutoffSlider, filterGainSlider;
+    std::unique_ptr<ParameterSlider> frequencyCutoffSlider, filterGainSlider;
     ComboBox filterTypeDropDown;
     Label filterCutoffLabel, filterGainLabel;
     

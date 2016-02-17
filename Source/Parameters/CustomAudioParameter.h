@@ -20,15 +20,15 @@
     Will probably build out this class in future versions and may consider moving code like the volt octave mapping to a utilities
     library/class.
  */
-class CustomAudioParameter : public AudioProcessorParameter
+class CustomAudioParameter : public AudioProcessorParameterWithID
 {
 
 public:
     
-    CustomAudioParameter(const String& paramName, int initParameterType);
+    CustomAudioParameter(String parameterID, String parameterName, int initParameterType);
     
     //initSetValueCallback is a callback function you can specify (using a lambda etc) that will be called every time the parameter value changes.
-    CustomAudioParameter(const String& paramName, int initParameterType, std::function<void(float)> initSetValueCallback);
+    CustomAudioParameter(String parameterID, String parameterName, int initParameterType, std::function<void(float)> initSetValueCallback);
     
     ~CustomAudioParameter();
     
@@ -76,6 +76,7 @@ private:
     float defaultValue = 0.5;
     
     //Using std::atomic for the host/GUI changeable value to stop any data race conditions etc. As per Timur's talk.
+    //The gui thread will be updating this value via the ParameterSlider objects etc.
     std::atomic<float> normalisedValue;
     
     float customValue = 0.0;
@@ -84,7 +85,6 @@ private:
     
     //Used with ParameterTypes enum to represent filter type, i.e lowpass, highpass etc.
     int parameterType;
-    
     String name;
     
     std::function<void(float)> setValueCallback = nullptr;

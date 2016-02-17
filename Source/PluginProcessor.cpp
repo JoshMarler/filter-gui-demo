@@ -18,14 +18,14 @@ FilterGuiDemoAudioProcessor::FilterGuiDemoAudioProcessor() : filter1(new VAOnePo
     /* The lambda is capturing a value copy of the this pointer to the audio processor. The processor will be destroyed after the parameter object so
      this is safe.*/
     auto cutoffParamCallback = [this] (float newCutoff){this->filter1->setCutoff(newCutoff);};
-    filterCutoffParam = new CustomAudioParameter("FilterCutoff", CustomAudioParameter::ParameterTypes::Volt_Octave_Param, cutoffParamCallback);
+    filterCutoffParam = new CustomAudioParameter("FilterCutoff", "FilterCutoff", CustomAudioParameter::ParameterTypes::Volt_Octave_Param, cutoffParamCallback);
     
     //Setting custom min and max values for filterCutoffParam as parameter is Volt_Octave_Param type. See CustomAudioParameter.h comments.
     filterCutoffParam->setCustomMinValue(defaultMinFilterFrequency);
     filterCutoffParam->setCustomMaxValue(defaultMaxFilterFrequency);
     
     auto gainParamCallback = [this] (float gain) {this->filter1->setGain(gain);};
-    filterGainParam = new CustomAudioParameter("FilterGain", CustomAudioParameter::ParameterTypes::Regular_Float_Param, gainParamCallback);
+    filterGainParam = new CustomAudioParameter("FilterGain", "FilterGain", CustomAudioParameter::ParameterTypes::Regular_Float_Param, gainParamCallback);
     
     addParameter(filterCutoffParam);
     addParameter(filterGainParam);
@@ -165,12 +165,37 @@ void FilterGuiDemoAudioProcessor::getStateInformation (MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    // Create an outer XML element..
+    XmlElement xml ("MYPLUGINSETTINGS");
+    
+    // Store the values of all our parameters, using their param ID as the XML attribute
+    for (int i = 0; i < getNumParameters(); ++i)
+        if (AudioProcessorParameterWithID* p = dynamic_cast<AudioProcessorParameterWithID*> (getParameters().getUnchecked(i)))
+            xml.setAttribute (p->paramID, p->getValue());
+    
+    // then use this helper function to stuff it into the binary blob and return it..
+    copyXmlToBinary (xml, destData);
 }
 
 void FilterGuiDemoAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    // This getXmlFromBinary() helper function retrieves our XML from the binary blob..
+    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    
+    if (xmlState != nullptr)
+    {
+        // make sure that it's actually our type of XML object..
+        if (xmlState->hasTagName ("MYPLUGINSETTINGS"))
+        {
+            // Now reload our parameters..
+            for (int i = 0; i < getNumParameters(); ++i)
+                if (AudioProcessorParameterWithID* p = dynamic_cast<AudioProcessorParameterWithID*> (getParameters().getUnchecked(i)))
+                    p->setValueNotifyingHost ((float) xmlState->getDoubleAttribute (p->paramID, p->getValue()));
+        }
+    }
 }
 
 //==============================================================================

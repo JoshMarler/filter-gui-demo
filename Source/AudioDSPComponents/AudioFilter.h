@@ -76,6 +76,7 @@ protected:
     float minFrequency = 0.0;
     float maxFrequency = 0.0;
     
+    //Wrap these as std::atomic ? What if they are updated by lfo etc and the gui thread also reads them in some way through magnitudeResponse call etc.
     float cutoffFrequency = 0.0;
     float filterGain = 1.0;
     float qFactor = 0.0;

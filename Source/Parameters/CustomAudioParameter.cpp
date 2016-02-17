@@ -10,16 +10,16 @@
 
 #include "CustomAudioParameter.h"
 
-CustomAudioParameter::CustomAudioParameter(const String& paramName, int initParameterType) : normalisedValue(0.0)
+CustomAudioParameter::CustomAudioParameter(String parameterID, String parameterName, int initParameterType) : AudioProcessorParameterWithID(parameterID, parameterName), normalisedValue(0.0)
 {
-    name = paramName;
+    name = parameterName;
     parameterType = initParameterType;
 }
 
 
-CustomAudioParameter::CustomAudioParameter(const String& paramName, int initParameterType, std::function<void(float)> initSetValueCallback)
+CustomAudioParameter::CustomAudioParameter(String parameterID, String parameterName, int initParameterType, std::function<void(float)> initSetValueCallback) : AudioProcessorParameterWithID(parameterID, parameterName), normalisedValue(0.0)
 {
-    name = paramName;
+    name = parameterName;
     parameterType = initParameterType;
     setValueCallback = initSetValueCallback;
 }
@@ -121,7 +121,22 @@ float CustomAudioParameter::getValueForText(const String& text) const
 
 String CustomAudioParameter::getText(float value, int/*Maximum String Length - default value provided/optional*/) const
 {
-    return  getLabel();
+    String text;
+    
+    switch(parameterType)
+    {
+        case Regular_Float_Param:
+            text = String(value);
+            break;
+        case Volt_Octave_Param:
+            text = String(customValue) + getLabel();
+        default:
+            text = String(value);;
+            break;
+            
+    }
+    
+    return text;
 }
 
 

@@ -28,6 +28,10 @@
               file="Source/GUIComponents/FilterResponseDisplay.cpp"/>
         <FILE id="AWHIkt" name="FilterResponseDisplay.h" compile="0" resource="0"
               file="Source/GUIComponents/FilterResponseDisplay.h"/>
+        <FILE id="G7SAMQ" name="ParameterSlider.cpp" compile="1" resource="0"
+              file="Source/GUIComponents/ParameterSlider.cpp"/>
+        <FILE id="GPHEhl" name="ParameterSlider.h" compile="0" resource="0"
+              file="Source/GUIComponents/ParameterSlider.h"/>
       </GROUP>
       <GROUP id="{BFBD566A-22D8-445A-FCD9-73739DF23E9B}" name="AudioDSPComponents">
         <FILE id="MDo4vR" name="AudioFilter.cpp" compile="1" resource="0" file="Source/AudioDSPComponents/AudioFilter.cpp"/>

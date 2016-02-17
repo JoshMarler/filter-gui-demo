@@ -15,7 +15,7 @@
 //==============================================================================
 FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiDemoAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p), customLookAndFeel(),
-      filterResponseDisplay(processor.getAudioFilter())
+      filterResponseDisplay(processor.getAudioFilter()), frequencyCutoffSlider(new ParameterSlider (*processor.filterCutoffParam)),filterGainSlider(new ParameterSlider (*processor.filterGainParam))
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -24,21 +24,20 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     FilterGuiDemoAudioProcessorEditor::setLookAndFeel(&customLookAndFeel);
     
     //Setup Components
-    addAndMakeVisible(frequencyCutoffSlider);
-    frequencyCutoffSlider.setName("FilterCutoff");
-    frequencyCutoffSlider.setSliderStyle(Slider::Rotary);
-    frequencyCutoffSlider.setRange(0.0, 1.0, 0.01);
-    frequencyCutoffSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
-    frequencyCutoffSlider.setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
-    frequencyCutoffSlider.addListener(this);
+    addAndMakeVisible(*frequencyCutoffSlider);
+    frequencyCutoffSlider->setName("FilterCutoff");
+    frequencyCutoffSlider->setSliderStyle(Slider::Rotary);
+    frequencyCutoffSlider->setRange(0.0, 1.0, 0.01);
+    frequencyCutoffSlider->setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
+    frequencyCutoffSlider->setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
     
-    addAndMakeVisible(filterGainSlider);
-    filterGainSlider.setName("FilterGain");
-    filterGainSlider.setSliderStyle(Slider::Rotary);
-    filterGainSlider.setRange(0.0, 1.0, 0.05);
-    filterGainSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
-    filterGainSlider.setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
-    filterGainSlider.addListener(this);
+    addAndMakeVisible(*filterGainSlider);
+    filterGainSlider->setName("FilterGain");
+    filterGainSlider->setSliderStyle(Slider::Rotary);
+    filterGainSlider->setRange(0.0, 1.0, 0.05);
+    filterGainSlider->setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
+    filterGainSlider->setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
+    
     
     addAndMakeVisible(filterCutoffLabel);
     filterCutoffLabel.setText("Cutoff", juce::NotificationType::dontSendNotification);
@@ -70,52 +69,6 @@ FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()
 {
 }
 
-//==============================================================================
-AudioProcessorParameter* FilterGuiDemoAudioProcessorEditor::getParameterFromSlider(const Slider* slider) const
-{
-    if (slider == &frequencyCutoffSlider)
-    {
-        return processor.filterCutoffParam;
-    }
-    
-    else if (slider == &filterGainSlider)
-    {
-        return processor.filterGainParam;
-    }
-    return nullptr;
-}
-
-//==============================================================================
-void FilterGuiDemoAudioProcessorEditor::sliderValueChanged(Slider* slider)
-{
-    
-    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
-    {
-        param->setValueNotifyingHost((float) slider->getValue());
-        
-        //Dirty way of getting the filter response display to repaint / update on cutoff change.
-        //Probably a better way to do this.
-        filterResponseDisplay.repaint();
-    }
-}
-
-//==============================================================================
-void FilterGuiDemoAudioProcessorEditor::sliderDragStarted(Slider* slider)
-{
-    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
-    {
-        param->beginChangeGesture();
-    }
-}
-
-//==============================================================================
-void FilterGuiDemoAudioProcessorEditor::sliderDragEnded(Slider* slider)
-{
-    if (AudioProcessorParameter* param = getParameterFromSlider(slider))
-    {
-        param->endChangeGesture();
-    }
-}
 
 //==============================================================================
 void FilterGuiDemoAudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatChanged)
@@ -143,10 +96,10 @@ void FilterGuiDemoAudioProcessorEditor::resized()
     filterTypeDropDown.setBounds(225, 50, 150, 30);
     
     filterCutoffLabel.setBounds(85, 358, 130, 20);
-    frequencyCutoffSlider.setBounds(50, 386, 135, 105);
-    frequencyCutoffSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
+    frequencyCutoffSlider->setBounds(50, 386, 135, 105);
+    frequencyCutoffSlider->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
     
     filterGainLabel.setBounds(443, 358, 130, 20);
-    filterGainSlider.setBounds(400, 386, 135, 105);
-    filterGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
+    filterGainSlider->setBounds(400, 386, 135, 105);
+    filterGainSlider->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
 }
