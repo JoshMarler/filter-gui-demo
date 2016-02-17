@@ -13,8 +13,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "CustomLookAndFeel.h"
-#include "FilterResponseDisplay.h"
+#include "GUIComponents/CustomLookAndFeel.h"
+#include "GUIComponents/FilterResponseDisplay.h"
 
 
 //==============================================================================
@@ -25,9 +25,9 @@ class FilterGuiDemoAudioProcessorEditor  : public AudioProcessorEditor,
                                            public ComboBoxListener
 {
 public:
+
     FilterGuiDemoAudioProcessorEditor (FilterGuiDemoAudioProcessor&);
     ~FilterGuiDemoAudioProcessorEditor();
-
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;

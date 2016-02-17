@@ -12,7 +12,7 @@
 #define FILTERRESPONSEDISPLAY_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "AudioFilter.h"
+#include "../AudioDSPComponents/AudioFilter.h"
 
 // A filter magnitude response display class
 // modified from and based on some code by semanticaudio

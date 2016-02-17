@@ -12,8 +12,8 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "VAOnePoleFilter.h"
-#include "CustomAudioParameter.h"
+#include "AudioDSPComponents/VAOnePoleFilter.h"
+#include "Parameters/CustomAudioParameter.h"
 
 
 //==============================================================================
