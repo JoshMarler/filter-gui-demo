@@ -62,8 +62,8 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     
     addAndMakeVisible(filterResponseDisplay);
     filterResponseDisplay.setMagResponseColour(Colours::greenyellow);
-    filterResponseDisplay.setDisplayBackgroundColour(Colours::grey);
-    filterResponseDisplay.setBounds(50, 150, 500, 200);
+    filterResponseDisplay.setDisplayBackgroundColour(Colours::darkgrey);
+    filterResponseDisplay.setBounds(50, 125, 500, 200);
 }
 
 FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()
@@ -139,17 +139,14 @@ void FilterGuiDemoAudioProcessorEditor::paint (Graphics& g)
 
 void FilterGuiDemoAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-    
-    filterResponseDisplay.setBounds(50, 150, 500, 200);
+    filterResponseDisplay.setBounds(50, 125, 500, 200);
     filterTypeDropDown.setBounds(225, 50, 150, 30);
     
-    filterCutoffLabel.setBounds(100, 380, 130, 20);
-    frequencyCutoffSlider.setBounds(100, 375, 135, 135);
-    frequencyCutoffSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 75, 20);
+    filterCutoffLabel.setBounds(85, 358, 130, 20);
+    frequencyCutoffSlider.setBounds(50, 386, 135, 105);
+    frequencyCutoffSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
     
-    filterGainLabel.setBounds(445, 380, 130, 20);
-    filterGainSlider.setBounds(440, 375, 135, 135);
-    filterGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 75, 20);
+    filterGainLabel.setBounds(443, 358, 130, 20);
+    filterGainSlider.setBounds(400, 386, 135, 105);
+    filterGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 20);
 }

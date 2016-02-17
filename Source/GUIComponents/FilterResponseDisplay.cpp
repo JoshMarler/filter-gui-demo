@@ -64,8 +64,10 @@ void FilterResponseDisplay::paint(Graphics& g)
     g.setColour(magResponseColour);
     g.strokePath(magnitudeResponsePath, PathStrokeType(filterPathThickness));
     
-    /* Fill area under/inside path with same colour at a lower alpha / highlight value.
-       Try setting magResponseColour.withAlpha value to different values to get a fill shade you like.*/
+    /*
+       Fill area under/inside path with same colour at a lower alpha / highlight value.
+       Try setting magResponseColour.withAlpha value to different values to get a fill shade you like.
+     */
     g.setColour(magResponseColour.withAlpha((uint8) 0x9a));
     g.fillPath(magnitudeResponsePath);
     
