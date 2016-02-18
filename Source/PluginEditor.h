@@ -15,7 +15,7 @@
 #include "PluginProcessor.h"
 #include "GUIComponents/CustomLookAndFeel.h"
 #include "GUIComponents/FilterResponseDisplay.h"
-#include "GUIComponents/ParameterSlider.h"
+#include "GUIComponents/CustomSlider.h"
 
 
 //==============================================================================
@@ -46,7 +46,7 @@ private:
     //GUI Components
     CustomLookAndFeel customLookAndFeel;
     FilterResponseDisplay filterResponseDisplay;
-    std::unique_ptr<ParameterSlider> frequencyCutoffSlider, filterGainSlider;
+    std::unique_ptr<CustomSlider> frequencyCutoffSlider, filterGainSlider;
     ComboBox filterTypeDropDown;
     Label filterCutoffLabel, filterGainLabel;
     

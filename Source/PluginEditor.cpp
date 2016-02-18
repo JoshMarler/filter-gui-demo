@@ -15,7 +15,7 @@
 //==============================================================================
 FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiDemoAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p), customLookAndFeel(),
-      filterResponseDisplay(processor.getAudioFilter()), frequencyCutoffSlider(new ParameterSlider (*processor.filterCutoffParam)),filterGainSlider(new ParameterSlider (*processor.filterGainParam))
+      filterResponseDisplay(processor.getAudioFilter()), frequencyCutoffSlider(new CustomSlider (*processor.filterCutoffParam)),filterGainSlider(new CustomSlider (*processor.filterGainParam))
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -37,7 +37,6 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     filterGainSlider->setRange(0.0, 1.0, 0.05);
     filterGainSlider->setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
     filterGainSlider->setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
-    
     
     addAndMakeVisible(filterCutoffLabel);
     filterCutoffLabel.setText("Cutoff", juce::NotificationType::dontSendNotification);
@@ -63,6 +62,7 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     filterResponseDisplay.setMagResponseColour(Colours::greenyellow);
     filterResponseDisplay.setDisplayBackgroundColour(Colours::darkgrey);
     filterResponseDisplay.setBounds(50, 125, 500, 200);
+    
 }
 
 FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()

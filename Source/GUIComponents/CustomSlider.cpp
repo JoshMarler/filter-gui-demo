@@ -8,9 +8,9 @@
   ==============================================================================
 */
 
-#include "ParameterSlider.h"
+#include "CustomSlider.h"
 
-ParameterSlider::ParameterSlider (AudioProcessorParameter& p)
+CustomSlider::CustomSlider (AudioProcessorParameter& p)
 : Slider (p.getName (256)), param (p)
 {
     setRange (0.0, 1.0, 0.0);
@@ -18,37 +18,37 @@ ParameterSlider::ParameterSlider (AudioProcessorParameter& p)
     updateSliderPos();
 }
 
-void ParameterSlider::valueChanged()
+void CustomSlider::valueChanged()
 {
     param.setValue ((float) Slider::getValue());
 }
 
-void ParameterSlider::timerCallback()
+void CustomSlider::timerCallback()
 {
     updateSliderPos();
 }
 
-void ParameterSlider::startedDragging()
+void CustomSlider::startedDragging()
 {
     param.beginChangeGesture();
 }
-void ParameterSlider::stoppedDragging()
+void CustomSlider::stoppedDragging()
 {
     param.endChangeGesture();
 }
 
-double ParameterSlider::getValueFromText (const String& text)
+double CustomSlider::getValueFromText (const String& text)
 {
     return param.getValueForText (text);
 }
 
 
-String ParameterSlider::getTextFromValue (double value)
+String CustomSlider::getTextFromValue (double value)
 {
     return param.getText ((float) value, 1024);
 }
 
-void ParameterSlider::updateSliderPos()
+void CustomSlider::updateSliderPos()
 {
     const float newValue = param.getValue();
     
