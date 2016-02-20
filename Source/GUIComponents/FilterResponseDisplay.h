@@ -37,9 +37,7 @@ public:
     
     /*
         Setup as a slider listener so that filter display can be updated/call it's paint method when the relevant
-        filter cutoff slider is moved. We dont want this to update on the actual cutoff parameter change or
-        thefilters internal cutoff value as these may be automated by the host or modulated by an lfo or something
-        which would make the components filter display/response graph jump all over the place.
+        filter cutoff slider is moved.
      
         There are various possible ways to handle updating the display when a change in the filter occurs but this 
         seems the simplest.

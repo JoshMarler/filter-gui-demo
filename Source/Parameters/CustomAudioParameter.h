@@ -16,7 +16,11 @@
 /*
     Modified parameter class with some basic added extra's like ability to specify a callback funtion using std::function to be 
     called whenever parameter value changes. This class uses a NormalisableRange range object which defaults to 0.0 - 1.0 range unless
-    otherwise specified using the setNormalisableRange function.
+    otherwise specified using the setNormalisableRange function. 
+ 
+    The value passed into setValue should still be between 0.0 and 1.0 - the NormalisableRange object is NOT used to convert values outside
+    of a 0.0 - 1.0 range passed to setValue. The NormalisableRange converts 0.0 - 1.0 values to a custom range specified by the user which 
+    can then be used for display purposes and also passed to the setValueCallback function. 
  */
 class CustomAudioParameter : public AudioProcessorParameterWithID
 {

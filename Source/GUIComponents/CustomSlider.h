@@ -23,11 +23,7 @@ public:
    
     void startedDragging() override;
     void stoppedDragging() override;
-    
-    //Calls Slider::setRange function internally, re-defining so as to update the Normalisable Range. Could maybe handle this better...
-    void setRange(double min, double max);
-    void setRange(double min, double max, double step);
-
+  
     double getValueFromText (const String& text) override;
     String getTextFromValue (double value) override;
     
@@ -36,9 +32,6 @@ public:
 private:
     
     AudioProcessorParameter& param;
-    
-    NormalisableRange<float> range;
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomSlider)
 };
 

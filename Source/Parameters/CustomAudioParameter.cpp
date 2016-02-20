@@ -88,7 +88,6 @@ void CustomAudioParameter::setLabel(String newLabelText)
 
 String CustomAudioParameter::getLabel() const
 {
-    
     return labelText;
 }
 
