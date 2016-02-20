@@ -17,13 +17,11 @@ Future revisions of this example plugin will implement further filter types (Moo
 
 
 
-Thanks and credit to the following for allowing me to use some of their code to build off. 
+Thanks and credit to the following for allowing me to use some of their code/Ideas to build off. 
 
 The guys at Semantic Audio for letting me use/pull apart their own filter display class - http://www.semanticaudio.co.uk
 
-Mr Will Pickle for allowing me to steal a VoltOctave conversion function - www.willpirkle.com
-
-Finally Vadim Zavalishin for the excellent VA Filter paper - https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_1.1.1.pdf
+Vadim Zavalishin for the excellent VA Filter paper - https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_1.1.1.pdf
 
 Cheers
 
