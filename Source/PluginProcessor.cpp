@@ -18,14 +18,19 @@ FilterGuiDemoAudioProcessor::FilterGuiDemoAudioProcessor() : filter1(new VAOnePo
     /* The lambda is capturing a value copy of the this pointer to the audio processor. The processor will be destroyed after the parameter object so
      this is safe.*/
     auto cutoffParamCallback = [this] (float newCutoff){this->filter1->setCutoff(newCutoff);};
-    filterCutoffParam = new CustomAudioParameter("FilterCutoff", "FilterCutoff", CustomAudioParameter::ParameterTypes::Volt_Octave_Param, cutoffParamCallback);
+    filterCutoffParam = new CustomAudioParameter("FilterCutoff", "FilterCutoff", false, cutoffParamCallback);
     
-    //Setting custom min and max values for filterCutoffParam as parameter is Volt_Octave_Param type. See CustomAudioParameter.h comments.
-    filterCutoffParam->setCustomMinValue(defaultMinFilterFrequency);
-    filterCutoffParam->setCustomMaxValue(defaultMaxFilterFrequency);
+    //This param represents a filters cutoff frequency so appending Hz string to label for display purposes.
+    filterCutoffParam->setLabel("Hz");
     
+    /*
+        The filters min and max frequency will be used as normalized range values and values in this range will be passed to the set value
+        callback function.
+     */
+    filterCutoffParam->setNormalisableRange(defaultMinFilterFrequency, defaultMaxFilterFrequency);
+   
     auto gainParamCallback = [this] (float gain) {this->filter1->setGain(gain);};
-    filterGainParam = new CustomAudioParameter("FilterGain", "FilterGain", CustomAudioParameter::ParameterTypes::Regular_Float_Param, gainParamCallback);
+    filterGainParam = new CustomAudioParameter("FilterGain", "FilterGain", true, gainParamCallback);
     
     addParameter(filterCutoffParam);
     addParameter(filterGainParam);

@@ -77,7 +77,7 @@ private:
     
     //Default setup values for filter etc.
     const float defaultSampleRate = 44100.00;
-    const float defaultMinFilterFrequency = 6.00;
+    const float defaultMinFilterFrequency = 20.00;
     const float defaultMaxFilterFrequency = 20000.00;
     
     //==============================================================================

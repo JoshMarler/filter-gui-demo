@@ -79,9 +79,11 @@ void FilterResponseDisplay::drawLowpass()
     float freq = 0.0;
     float magnitudeDBValue = 0.0;
     
-    /* LowPass so start path on left hand side of component i.e at 0.0f - using 0.0f - (filterPathThickness/2) for asthetic purposes
-     Try commeting out - (filterPathThickness/2) to see the effect. This line hides the highlighted path edge so that the path edge/highlight
-     shows only on the top of the magnitude response path. */
+    /* 
+        LowPass so start path on left hand side of component i.e at 0.0f - using 0.0f - (filterPathThickness/2) for asthetic purposes
+        Try commeting out - (filterPathThickness/2) to see the effect. This line hides the highlighted path edge so that the path edge
+        highlight shows only on the top of the magnitude response path.
+     */
     magnitudeResponsePath.startNewSubPath((0.0f - (filterPathThickness/2)), (getBottom() - (filterPathThickness/2)));
     magnitudeDBValue = filterToUse->getMagnitudeResponse(minFrequency);
     magnitudeResponsePath.lineTo((0.0f - (filterPathThickness/2)) , dbToYAxis(magnitudeDBValue));
@@ -97,9 +99,11 @@ void FilterResponseDisplay::drawLowpass()
     magnitudeDBValue = filterToUse->getMagnitudeResponse(maxFrequency);
     magnitudeResponsePath.lineTo(((float) getWidth() + (filterPathThickness/2)), dbToYAxis(magnitudeDBValue));
     
-    /* Dirty Trick to close the path nicely when cutoff is at max level (this is not apparent for virtual analogue filters that have not been
-     oversampled when cutoff is close to nyquist as the response is pulled to zero). Try commenting this line out and running the plugin at
-     higher sample rate i.e 96khz to see the visual result of the path closing without this. */
+    /* 
+        Dirty Trick to close the path nicely when cutoff is at max level (this is not apparent for virtual analogue filters that have not been
+        oversampled when cutoff is close to nyquist as the response is pulled to zero). Try commenting this line out and running the plugin at
+        higher sample rate i.e 96khz to see the visual result of the path closing without this.
+     */
     magnitudeResponsePath.lineTo(((float) getWidth() + (filterPathThickness/2)), (getBottom() - (filterPathThickness/2)));
     
 }
@@ -126,8 +130,10 @@ void FilterResponseDisplay::drawHighpass()
     magnitudeDBValue = filterToUse->getMagnitudeResponse(minFrequency);
     magnitudeResponsePath.lineTo ((0.0f - (filterPathThickness/2)), dbToYAxis(magnitudeDBValue));
     
-    /* Dirty trick again to close the path nicely when cutoff at min level for High Pass - try cmmenting this line out to se the visual
-     effect on the reponse path closing without it*/
+    /* 
+        Dirty trick again to close the path nicely when cutoff at min level for High Pass - try cmmenting this line out to se the visual
+        effect on the reponse path closing without it
+     */
     magnitudeResponsePath.lineTo ((0.0f - (filterPathThickness/2)), (getBottom() - (filterPathThickness/2)));
 }
 
@@ -161,15 +167,21 @@ float FilterResponseDisplay::dbToYAxis(float dbGain)
     float scale = - (height) / (maxDecibels * 2);
     float scaledDbGain = dbGain * scale;
     
-    /* Negative db values will result in a negative yposition so add height/2 to result to scale into
-       correct component position for drawing. Test these calculations with a dbGain value equal to maxDecibels and
-       yPostion computed will be equal to the filterResponseDisplay's height as is correct. */
+    /* 
+        Negative db values will result in a negative yposition so add height/2 to result to scale into
+        correct component position for drawing. Test these calculations with a dbGain value equal to maxDecibels and
+        yPostion computed will be equal to the filterResponseDisplay's height as is correct.
+     */
     float yPosition = scaledDbGain + (height / 2);
     return yPosition;
 }
 
-
 void FilterResponseDisplay::setMaxDecibels(float maxDB)
 {
     maxDecibels = maxDB;
+}
+
+void FilterResponseDisplay::sliderValueChanged (Slider* slider)
+{
+    this->repaint();
 }

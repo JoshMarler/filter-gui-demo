@@ -12,7 +12,15 @@
 
 
 //Basic override of drawRotarySlider function
-//Uses path data from SVG to path data conversion tool in Introjucer
+
+/*
+    Uses path data from SVG to path data conversion tool in Introjucer/Projucer - works best if the SVG file used is composed of a
+    single vector / path. Change the pathData[] variable to whatever path data the SVG conversion tool spits out at you.
+ 
+    Pay attention to this line in the drawRotarySlider function  -  svgPath.scaleToFit(-innerRadius, -innerRadius, innerRadius * 2.0f, innerRadius * 2.0f, true);
+ 
+    This line scales the converted SVG path to fit inside the rotary sliders outer arc/circle. This is necessary only for this particular slider style and could be changed. 
+*/
 
 void CustomLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos,
                                        const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider)
@@ -85,7 +93,7 @@ void CustomLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, 
             svgPath.loadPathFromData (pathData, sizeof (pathData));
             
             // Fit svgpath to inner dimensions of outlineArc
-            svgPath.scaleToFit(-innerRadius, -innerRadius, innerRadius * 2.0f, innerRadius * 2.0f,true);
+            svgPath.scaleToFit(-innerRadius, -innerRadius, innerRadius * 2.0f, innerRadius * 2.0f, true);
             
             p.addEllipse(-innerRadius, -innerRadius, innerRadius * 2.0f, innerRadius * 2.0f);
             g.fillPath (svgPath, AffineTransform::rotation (angle).translated (centreX, centreY));

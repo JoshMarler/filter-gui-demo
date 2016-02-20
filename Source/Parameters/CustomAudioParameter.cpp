@@ -10,18 +10,22 @@
 
 #include "CustomAudioParameter.h"
 
-CustomAudioParameter::CustomAudioParameter(String parameterID, String parameterName, int initParameterType) : AudioProcessorParameterWithID(parameterID, parameterName), normalisedValue(0.0)
+CustomAudioParameter::CustomAudioParameter(String initParameterID, String initParameterName, bool initUseNormalizedForCallback) : AudioProcessorParameterWithID(initParameterID, initParameterName), normalisedValue(0.0), unnormalisedValue(0.0)
 {
-    name = parameterName;
-    parameterType = initParameterType;
+    name = initParameterName;
+    useNormalizedForCallback = initUseNormalizedForCallback;
+    range.start = 0.0;
+    range.end = 1.0;
 }
 
 
-CustomAudioParameter::CustomAudioParameter(String parameterID, String parameterName, int initParameterType, std::function<void(float)> initSetValueCallback) : AudioProcessorParameterWithID(parameterID, parameterName), normalisedValue(0.0)
+CustomAudioParameter::CustomAudioParameter(String initParameterID, String initParameterName, bool initUseNormalizedForCallback, std::function<void(float)> initSetValueCallback) : AudioProcessorParameterWithID(initParameterID, initParameterName), normalisedValue(0.0), unnormalisedValue(0.0)
 {
-    name = parameterName;
-    parameterType = initParameterType;
+    name = initParameterName;
+    useNormalizedForCallback = initUseNormalizedForCallback;
     setValueCallback = initSetValueCallback;
+    range.start = 0.0;
+    range.end = 1.0;
 }
 
 
@@ -40,44 +44,30 @@ float CustomAudioParameter::getValue() const
 void CustomAudioParameter::setValue (float newValue)
 {
     normalisedValue.store(newValue);
+    unnormalisedValue.store(range.convertFrom0to1(newValue));
     
-    //Set relevant callback parameter for different parameter types
-    switch (parameterType) {
-        case Regular_Float_Param:
-            if (setValueCallback != nullptr)
-                 setValueCallback(normalisedValue.load());
-            break;
-        case Volt_Octave_Param:
-            customValue = calcValueVoltOctaveExp(customMinValue, customMaxValue, normalisedValue.load());
-            if (setValueCallback != nullptr)
-                setValueCallback(customValue);
-        default:
-            break;
+    if (setValueCallback != nullptr)
+    {
+        if (useNormalizedForCallback)
+        {
+            setValueCallback(normalisedValue.load());
+        }
+        else
+        {
+            setValueCallback(unnormalisedValue.load());
+        }
     }
-   
 }
 
-
-void CustomAudioParameter::setCustomMinValue(float newCustomMinValue)
+void CustomAudioParameter::setNormalisableRange(NormalisableRange<float> newRange)
 {
-    customMinValue = newCustomMinValue;
+    range = newRange;
 }
 
-
-void CustomAudioParameter::setCustomMaxValue(float newCustomMaxValue)
+void CustomAudioParameter::setNormalisableRange(float start, float end)
 {
-    customMaxValue = newCustomMaxValue;
-}
-
-
-float CustomAudioParameter::calcValueVoltOctaveExp(float minFrequencyLimit, float maxFrequencyLimit, float paramValue)
-{
-    float octaves = log2(maxFrequencyLimit/minFrequencyLimit);
-    if(minFrequencyLimit == 0)
-        return paramValue;
-    
-    // exp control
-    return minFrequencyLimit * pow(2, paramValue * octaves);
+    range.start = start;
+    range.end = end;
 }
 
 float CustomAudioParameter::getDefaultValue() const
@@ -91,51 +81,27 @@ String CustomAudioParameter::getName(int maximumStringLength) const
     return name;
 }
 
+void CustomAudioParameter::setLabel(String newLabelText)
+{
+    labelText = newLabelText;
+}
 
 String CustomAudioParameter::getLabel() const
 {
-    String labelValue = "";
     
-    switch (parameterType)
-    {
-        case Regular_Float_Param:
-            labelValue = "";
-            break;
-        case Volt_Octave_Param:
-            labelValue = "Hz";
-            break;
-        
-        default:
-            break;
-    }
-    
-    return labelValue;
+    return labelText;
 }
 
 
 float CustomAudioParameter::getValueForText(const String& text) const
 {
-    return text.getFloatValue();
+    return range.convertFrom0to1(text.getFloatValue());
 }
 
 
 String CustomAudioParameter::getText(float value, int/*Maximum String Length - default value provided/optional*/) const
 {
-    String text;
-    
-    switch(parameterType)
-    {
-        case Regular_Float_Param:
-            text = String(value);
-            break;
-        case Volt_Octave_Param:
-            text = String(customValue) + getLabel();
-        default:
-            text = String(value);;
-            break;
-            
-    }
-    
+    String text = String(range.convertFrom0to1(value)) + getLabel();
     return text;
 }
 

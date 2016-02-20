@@ -27,7 +27,10 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     addAndMakeVisible(*frequencyCutoffSlider);
     frequencyCutoffSlider->setName("FilterCutoff");
     frequencyCutoffSlider->setSliderStyle(Slider::Rotary);
-    frequencyCutoffSlider->setRange(0.0, 1.0, 0.01);
+    frequencyCutoffSlider->setRange(20.00, 20000.00);
+    
+    //Logarithmic frequency - 0.5 skew factor effectivley makes this a volt-octave knob.
+    frequencyCutoffSlider->setSkewFactor(0.5);
     frequencyCutoffSlider->setColour(Slider::rotarySliderOutlineColourId, Colours::greenyellow);
     frequencyCutoffSlider->setColour(Slider::rotarySliderFillColourId, Colours::greenyellow);
     
@@ -63,6 +66,9 @@ FilterGuiDemoAudioProcessorEditor::FilterGuiDemoAudioProcessorEditor (FilterGuiD
     filterResponseDisplay.setDisplayBackgroundColour(Colours::darkgrey);
     filterResponseDisplay.setBounds(50, 125, 500, 200);
     
+    //Add the filter display as a listener to the cutoff and gain sliders for updates.
+    frequencyCutoffSlider->addListener(&filterResponseDisplay);
+    filterGainSlider->addListener(&filterResponseDisplay);
 }
 
 FilterGuiDemoAudioProcessorEditor::~FilterGuiDemoAudioProcessorEditor()
